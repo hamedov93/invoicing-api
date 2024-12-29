@@ -48,7 +48,7 @@ class UserFactory extends Factory
             // Attach sessions to user
             Session::factory()
                 ->count(5)
-                ->forUser($user)
+                ->for($user)
                 ->create();
         });
     }
