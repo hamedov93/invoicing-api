@@ -51,7 +51,7 @@ class InvoiceService {
 	{
 		$appointmentPrice = InvoiceLineItem::LineItemConfig['appointment']['price'];
 		\DB::table('invoice_details')->insertUsing(
-			['invoice_id', 'user_id', 'event', 'price', 'discount_event', 'discount_amount'],
+			['invoice_id', 'user_id', 'event', 'price'],
 			\DB::table('sessions')->select(
 				\DB::raw("{$invoice->id} as invoice_id"),
 				'user_id',
