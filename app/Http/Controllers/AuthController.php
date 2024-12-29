@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => $user,
-            'token' => $user->createToken(),
+            'token' => $user->createToken('invoice-api-token'),
         ]);
     }
 }
