@@ -59,7 +59,7 @@ interface EloquentRepositoryInterface
 	 * @param  array $where
 	 * @return void
 	 */
-	public function delete($id, $where = []): array;
+	public function delete(int | array $id, $where = []): array;
 
 	/**
 	 * Pick some keys from array

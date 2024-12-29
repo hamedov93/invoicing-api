@@ -16,7 +16,7 @@ class InvoiceDetail extends Model
         'price',
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 
     public function invoice()
     {

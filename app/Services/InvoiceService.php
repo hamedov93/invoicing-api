@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Contracts\Repositories\InvoiceRepositoryInterface;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
-use App\Models\Session;
 use Illuminate\Support\Str;
 
 class InvoiceService {
@@ -17,6 +16,13 @@ class InvoiceService {
 		$this->invoiceRepository = $invoiceRepository;
 	}
 
+	public function getInvoiceDetails(int $id): Invoice
+	{
+		$invoice = $this->invoiceRepository->getInvoiceDetails($id);
+
+		return $invoice;
+	}
+
 	public function create(array $data): Invoice
 	{
 		$start = $data['start_date'];
@@ -26,7 +32,8 @@ class InvoiceService {
 		$this->checkForOverlapping($data['customer_id'], $start, $end);
 
 		$data['currency'] = 'SAR';
-		$data['reference_number'] = strtoupper(Str::random(10))
+		$data['reference_number'] = strtoupper(Str::random(10));
+		$data['total'] = 0; // Calculated later
 		$invoice = $this->invoiceRepository->create($data);
 
 		// Calculate event billing
@@ -50,10 +57,8 @@ class InvoiceService {
 				'user_id',
 				\DB::raw("'appointment' as event"),
 				\DB::raw("{$appointmentPrice} as price"),
-				null,
-				null,
 			)
-			->innerJoin('users')->on('users.id', '=', 'sessions.user_id')
+			->join('users', 'users.id', '=', 'sessions.user_id')
 			->where('users.customer_id', $invoice->customer_id)
 			->whereBetween('appointment', [$start, $end])
 			->groupBy('user_id'),
@@ -64,16 +69,14 @@ class InvoiceService {
 	{
 		$activationPrice = InvoiceLineItem::LineItemConfig['activation']['price'];
 		\DB::table('invoice_details')->insertUsing(
-			['invoice_id', 'user_id', 'event', 'price', 'discount_event', 'discount_amount'],
+			['invoice_id', 'user_id', 'event', 'price'],
 			\DB::table('sessions')->select(
 				\DB::raw("{$invoice->id} as invoice_id"),
 				'user_id',
 				\DB::raw("'activation' as event"),
 				\DB::raw("{$activationPrice} as price"),
-				null,
-				null,
 			)
-			->innerJoin('users')->on('users.id', '=', 'sessions.user_id')
+			->join('users', 'users.id', '=', 'sessions.user_id')
 			->where('users.customer_id', $invoice->customer_id)
 			->whereBetween('activated_at', [$start, $end])
 			->whereNotIn('sessions.user_id', function($query) use ($invoice) {
@@ -89,14 +92,12 @@ class InvoiceService {
 	{
 		$registrationPrice = InvoiceLineItem::LineItemConfig['registration']['price'];
 		\DB::table('invoice_details')->insertUsing(
-			['invoice_id', 'user_id', 'event', 'price', 'discount_event', 'discount_amount'],
+			['invoice_id', 'user_id', 'event', 'price'],
 			\DB::table('users')->select(
 				\DB::raw("{$invoice->id} as invoice_id"),
-				'user_id',
+				'id as user_id',
 				\DB::raw("'registration' as event"),
 				\DB::raw("{$registrationPrice} as price"),
-				null,
-				null,
 			)
 			->where('users.customer_id', $invoice->customer_id)
 			->whereBetween('registration_date', [$start, $end])

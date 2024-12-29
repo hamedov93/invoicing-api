@@ -24,4 +24,11 @@ class InvoiceController extends Controller
             'invoice_id' => $invoice->id,
         ]);
     }
+
+    public function details(int $id)
+    {
+        $invoice = $this->invoiceService->getInvoiceDetails($id);
+
+        return response()->json($invoice);
+    }
 }

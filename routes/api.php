@@ -19,3 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/invoices', 'InvoiceController@create')->name('invoices.create');
+Route::get('/invoices/:id', 'InvoiceController@details')->name('invoices.details');

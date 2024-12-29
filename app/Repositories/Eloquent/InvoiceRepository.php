@@ -20,6 +20,13 @@ class InvoiceRepository extends EloquentRepository implements InvoiceRepositoryI
 		parent::__construct($model);
 	}
 
+	public function getInvoiceDetails(int $id): Invoice
+	{
+		return $this->model->where('id', $id)
+			->with(['lineItems', 'details', 'details.user'])
+			->firstOrFail();
+	}
+
 	public function checkOverlappingInvoices(int $customerId, string $start, string $end): bool
 	{
 		return $this->model->where('customer_id', $customerId)
