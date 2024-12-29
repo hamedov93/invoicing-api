@@ -23,7 +23,7 @@ class AuthController extends Controller
             abort(401, 'Invalid credentials');
         }
 
-        $user = $this->userRepository->getFirst(['email', $data['email']]);
+        $user = $this->userRepository->getFirst(['email' => $data['email']]);
 
         if ($user->role !== 'admin') {
             abort(403, 'Forbidden');
