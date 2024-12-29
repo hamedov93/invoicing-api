@@ -13,7 +13,8 @@ class InvoiceRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
+        // return auth()->check();
     }
 
     /**
@@ -24,7 +25,9 @@ class InvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'customer_id' => 'required|integer|exists:customers,id',
+            'start_date' => 'required|date|before:tomorrow',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
     }
 }

@@ -5,25 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Session extends Model
+class InvoiceDetail extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'invoice_id',
         'user_id',
-        'activated_at',
-        'appointment',
+        'event',
+        'price',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'activated_at' => 'date',
-        'appointment' => 'date',
-    ];
+    protected $timestamps = false;
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 
     public function user()
     {

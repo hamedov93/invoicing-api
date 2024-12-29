@@ -26,10 +26,9 @@ class EloquentRepository implements EloquentRepositoryInterface
 	 */
 	protected $filter;
 
-	public function __construct(Model $model, ?EloquentRepositoryFilter $filter = null)
+	public function __construct(Model $model)
 	{
 		$this->model = $model;
-		$this->filter = $filter;
 	}
 
 	/**
@@ -106,15 +105,15 @@ class EloquentRepository implements EloquentRepositoryInterface
 		return $this->getOne($where, $relations);
 	}
 
-	public function getMany($ids, $where = [], $relations = [])
+	public function getMany(array $ids, $where = [], $relations = [])
 	{
-		$ids = $this->resolveIds($ids);
 		return $this->model->whereIn('id', $ids)
 			->where($where)->with($relations)->get();
 	}
 
 	/**
 	 * Create new model and persist in db
+	 * 
 	 * @param  array  $data
 	 * @return \Illuminate\Database\Eloquent\Model
 	 */
@@ -149,9 +148,8 @@ class EloquentRepository implements EloquentRepositoryInterface
 	 * @param  int|array|json $id
 	 * @return void
 	 */
-	public function delete($id, $where = []): array
+	public function delete(int | array $id, $where = []): array
 	{
-		$ids = $this->resolveIds($id);
 		// If no ids are specified and no where conditions provided
 		// We cannot allow this delete operation
 		if (empty($ids) && empty($where)) {
@@ -184,32 +182,5 @@ class EloquentRepository implements EloquentRepositoryInterface
 	public function isModel($variable) : bool
 	{
 		return $variable instanceof Model;
-	}
-
-	/**
-	 * Get array of ids from input
-	 * @param  int|json|array $id
-	 * @return array
-	 */
-	public function resolveIds($id) : array
-	{
-		if (! (bool) $id) {
-			return [];
-		}
-
-		if (is_numeric($id)) {
-			return [(int) $id];
-		}
-
-		if (is_array($id)) {
-			return $id;
-		}
-
-		try {
-			return (array) json_decode(urldecode($id));
-		} catch (\Exception $e) {
-			// Not valid json
-			return [];
-		}
 	}
 }

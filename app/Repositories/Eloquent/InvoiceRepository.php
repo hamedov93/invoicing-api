@@ -19,4 +19,14 @@ class InvoiceRepository extends EloquentRepository implements InvoiceRepositoryI
 	{
 		parent::__construct($model);
 	}
+
+	public function checkOverlappingInvoices(int $customerId, string $start, string $end): bool
+	{
+		return $this->model->where('customer_id', $customerId)
+			->where(function($query) use ($start, $end) {
+				$query->whereBetween('start_date', [$start, $end])
+					->orWhereBetween('end_date', [$start, $end]);
+			})
+			->exists();
+	}
 }

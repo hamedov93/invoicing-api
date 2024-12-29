@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
-            $table->string('reference_number');
+            $table->string('reference_number')->unique();
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('total', 10, 2);
+            $table->string('currency');
             $table->timestamps();
         });
     }

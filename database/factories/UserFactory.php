@@ -19,13 +19,15 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $registrationDate = fake()->dateTimeBetween('-3 month', '-1 month');
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => \Hash::make('12345678'), // password
             'remember_token' => Str::random(10),
-            'registration_date' => fake()->dateTimeBetween('-3 month', '-2 month'),
+            'registration_date' => $registrationDate->format('Y-m-d'),
         ];
     }
 
@@ -44,10 +46,9 @@ class UserFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (User $user) {
-        
             // Attach sessions to user
             Session::factory()
-                ->count(5)
+                ->count(2)
                 ->for($user)
                 ->create();
         });

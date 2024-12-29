@@ -16,9 +16,12 @@ class SessionFactory extends Factory
      */
     public function definition()
     {
+        $activatedAt = fake()->dateTimeBetween('-2 month', '-5 days');
+        $appointment = fake()->dateTimeBetween($activatedAt, 'now');
+
         return [
-            'activated_at' => fake()->dateTimeBetween('-2 month', '-1 month'),
-            'appointment' => fake()->dateTimeBetween('-1 month', 'now'),
+            'activated_at' => $activatedAt->format('Y-m-d'),
+            'appointment' => $appointment->format('Y-m-d'),
         ];
     }
 }
