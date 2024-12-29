@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/auth/login', 'AuthController@login')->name('auth.login');
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    Route::post('/auth/login', 'AuthController@login')->name('auth.login');
     Route::post('/invoices', 'InvoiceController@create')->name('invoices.create');
     Route::get('/invoices/{id}', 'InvoiceController@details')->name('invoices.details');
 });
