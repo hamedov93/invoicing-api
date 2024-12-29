@@ -24,7 +24,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => \Hash::make('12345678'), // password
             'remember_token' => Str::random(10),
-            'registration_date' => fake()->dateTimeBetween('-2 month', '-3 month'),
+            'registration_date' => fake()->dateTimeBetween('-3 month', '-2 month'),
         ];
     }
 
