@@ -23,7 +23,7 @@ class InvoiceRepository extends EloquentRepository implements InvoiceRepositoryI
 	public function getInvoiceDetails(int $id): Invoice
 	{
 		return $this->model->where('id', $id)
-			->with(['lineItems', 'details', 'details.user'])
+			->with(['customer', 'lineItems', 'details', 'details.user'])
 			->firstOrFail();
 	}
 

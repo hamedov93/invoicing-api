@@ -32,7 +32,7 @@ class InvoiceService {
 		$this->checkForOverlapping($data['customer_id'], $start, $end);
 
 		$data['currency'] = 'SAR';
-		$data['reference_number'] = strtoupper(Str::random(10));
+		$data['reference_number'] = strtoupper(Str::random(10)); // TODO: Check unique
 		$data['total'] = 0; // Calculated later
 		$invoice = $this->invoiceRepository->create($data);
 

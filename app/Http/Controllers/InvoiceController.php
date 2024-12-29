@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InvoiceRequest;
+use App\Http\Resources\InvoiceResource;
 use App\Services\InvoiceService;
 
 class InvoiceController extends Controller
@@ -17,7 +18,6 @@ class InvoiceController extends Controller
     public function create(InvoiceRequest $request)
     {
         $data = $request->validated();
-
         $invoice = $this->invoiceService->create($data);
 
         return response()->json([
@@ -29,6 +29,6 @@ class InvoiceController extends Controller
     {
         $invoice = $this->invoiceService->getInvoiceDetails($id);
 
-        return response()->json($invoice);
+        return new InvoiceResource($invoice);
     }
 }
