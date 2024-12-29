@@ -18,9 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'customer_id',
         'name',
         'email',
         'password',
+        'registration_date',
     ];
 
     /**
@@ -41,4 +43,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
