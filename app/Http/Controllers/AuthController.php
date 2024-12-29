@@ -29,9 +29,15 @@ class AuthController extends Controller
             abort(403, 'Forbidden');
         }
 
+        // Create token with scopes
+        $accessToken = $user->createToken('invoice-api-token', [
+            'create-invoices',
+            'read-invoices',
+        ]);
+
         return response()->json([
             'user' => $user,
-            'token' => $user->createToken('invoice-api-token'),
+            'token' => $accessToken->plainTextToken,
         ]);
     }
 }
