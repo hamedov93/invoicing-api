@@ -1,0 +1,54 @@
+version: '3.8'
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysql:
+    driver: local
+
+services:
+  php-fpm:
+    build:
+      context: ./
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ./php-config/php.ini:/usr/local/etc/php/php.ini
+      - ./:/var/www
+    expose:
+      - '9000'
+    networks:
+      - backend
+
+  mysql:
+    build:
+      context: ./dev-config/mysql
+      args:
+        - MYSQL_VERSION=latest
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - backend
+
+  nginx:
+    build:
+      context: ./dev-config/nginx
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ./:/var/www/:cached
+      - ./dev-config/nginx/sites:/etc/nginx/sites-available
+      - ./dev-config/nginx/ssl:/etc/nginx/ssl
+    ports:
+      - "80:80"
+    networks:
+      - backend
