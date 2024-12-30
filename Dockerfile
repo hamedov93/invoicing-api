@@ -20,7 +20,7 @@ RUN pecl install -o -f redis \
 RUN docker-php-ext-install bcmath exif opcache mysqli
 
 # Copy opcache configration
-COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY ./dev-config/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 RUN apt-get install -yqq jpegoptim optipng pngquant gifsicle
 
@@ -44,9 +44,9 @@ RUN curl http://gordalina.github.io/cachetool/downloads/cachetool-3.2.1.phar -o 
     mv cachetool.phar /usr/local/bin/cachetool
 
 # Copy php config
-COPY ./php.ini /usr/local/etc/php/
-COPY ./laravel.ini /usr/local/etc/php/conf.d
-COPY ./xlaravel.pool.conf /usr/local/etc/php-fpm.d/
+COPY ./dev-config/php.ini /usr/local/etc/php/
+COPY ./dev-config/laravel.ini /usr/local/etc/php/conf.d
+COPY ./dev-config/xlaravel.pool.conf /usr/local/etc/php-fpm.d/
 
 # Install Composer
 RUN curl --silent --show-error "https://getcomposer.org/installer" | php -- --install-dir=/usr/local/bin --filename=composer
