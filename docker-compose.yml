@@ -27,8 +27,6 @@ services:
   mysql:
     build:
       context: ./dev-config/mysql
-      args:
-        - MYSQL_VERSION=latest
     environment:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_USER=${DB_USERNAME}
